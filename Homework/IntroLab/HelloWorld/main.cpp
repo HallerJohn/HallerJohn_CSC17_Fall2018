@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     //Initialize Variables
     
     //Process/Map inputs to outputs
-    
+    cout<<"Hello World"<<endl;
     //Output data
     
     //Exit stage right!
