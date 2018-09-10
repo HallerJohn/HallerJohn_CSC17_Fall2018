@@ -19,12 +19,20 @@ using namespace std;
 //Execution Begins Here
 int main(int argc, char** argv) {
     //Declare Variables
+    float frac=0.1;
+    float sum=0.0;
+    int nLoops=10000000;
     
-    //Initialize Variables
     
     //Process/Map inputs to outputs
+    for(int loop=1;loop<=nLoops;loop++){
+        sum+=frac;
+    }
     
     //Output data
+    cout<<"The answer should be ="<<frac<<"*"<<nLoops<<"="<<frac*nLoops<<endl;
+    cout<<"Actual answer ="<<sum<<endl;
+    cout<<"Error ="<<(1-sum/frac/nLoops)*100<<"%"<<endl;
     
     //Exit stage right!
     return 0;
