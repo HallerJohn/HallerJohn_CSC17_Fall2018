@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 using namespace std;
 
 //User Libraries
@@ -23,31 +24,61 @@ void swap(int &,int &);
 void smlLst(int *,int,int);
 void mrkSort(int *,int);
 void shuffle(int *,int,int);
+int numMode(int *,int);
+int nModes(int *,int,int);
+vector<int> fndMode(int *,int,int,vector<int> &modeVal);
+float fndMean(int *,int);
+int findMed(int *,int);
 
 //Execution Begins Here
 int main(int argc, char** argv) {
     //Set random number seed
     srand(static_cast<unsigned int>(time(0)));
     //Declare Variables
+    vector<int> modeVal;
     int size=100;
     int mod=10;
     int *array=fillAry(size,mod);
     
     //Print resulting array
-    prntAry(array,size,mod);
+//    prntAry(array,size,mod);
     
     
     //Shuffle the array
     shuffle(array,size,7);
     
     //Print shuffled array
-    prntAry(array,size,mod);
+//    prntAry(array,size,mod);
     
     //Sort the array
     mrkSort(array,size);
     
     //Output data
     prntAry(array,size,mod);
+    
+    //find mean
+    cout<<"The mean is ="<<fndMean(array,size)<<endl;
+    //find median
+    cout<<"The median is "<<findMed(array,size)<<endl;
+    
+    //Find the highest mode and the number of modes
+    int mode=numMode(array,size);
+    int modes=nModes(array,size,mode);
+    
+    //print results
+    cout<<endl<<"The highest mode is "<<mode<<endl;
+    cout<<endl<<"There are "<<modes<<" modes"<<endl;
+    
+    //find the value of modes
+    fndMode(array,size,mode,modeVal);
+    
+    //print results
+    if(modes>0){
+        cout<<endl<<"The Mode(s) are :"<<endl;
+        for(int i=0;i<modes;i++){
+            cout<<modeVal[i]<<endl;
+        }
+    }
     
     //Clean memory
     delete []array;
@@ -92,4 +123,66 @@ void shuffle(int *a,int n,int nShuf){
             if(i!=temp)swap(a[i],a[temp]);
         }
     }
+}
+
+int numMode(int *a,int n){
+    int fnCount=0;//Final count for mode
+    int crCount=1;//Current count for mode
+    for(int i=0;i<n;i++){
+        if((a[i]-a[i+1])==0){
+            crCount++;
+        }else{
+            crCount=0;
+        }if(crCount>fnCount){
+            fnCount=crCount;
+        }
+          
+    }
+    return fnCount;
+}
+
+int nModes(int *a,int n,int m){
+    int nMode=0;//Final number of modes
+    int crCount=1;//Current count for mode
+    for(int i=0;i<n;i++){
+        if((a[i]-a[i+1])==0){
+            crCount++;
+        }else{
+            crCount=1;
+        }if(crCount==m){
+            nMode++;
+        }
+          
+    }
+    return nMode;
+}
+
+vector<int> fndMode(int *a,int n,int m,vector<int> &modeVal){
+    int Mode=0;//What the mode is
+    int crCount=1;//Current count for mode
+    for(int i=0;i<n;i++){
+        if((a[i]-a[i+1])==0){
+            crCount++;
+        }else{
+            crCount=1;
+        }if(crCount==m){
+            modeVal. push_back(a[i]);
+        }
+          
+    }
+    return modeVal;
+}
+
+float fndMean(int *a,int n){
+    float mean=0;
+    for(int i=0;i<n;i++){
+        mean+=a[i];
+    }
+    return mean/n;
+}
+
+int findMed(int *a,int n){
+    if(n%2==0){
+        return (a[(n+1)/2]+a[n/2])/2;
+    }else return a[n+1/2];
 }
