@@ -57,9 +57,9 @@ string addBin(string a, string b){
     int carry=0;//var for carry
     int length = a.size();//length of both numbers
     for(int i=1;i<=length||carry==1;i++){//Loop until all digits added or if there is a carry
-        int first=a[length-i]-'0';//digit being added for first num
-        int second=b[length-i]-'0';//digit being added for second num
-        int sum=(first^second^carry)+'0';//if there is 1 or 3 trues it adds "10"
+        int first=a[length-i]-48;//digit being added for first num
+        int second=b[length-i]-48;//digit being added for second num
+        int sum=(first^second^carry)+48;//if there is 1 or 3 trues it adds '1''0'
         answer=static_cast<char>(sum)+answer;//add the sum from addition to final answer
         carry=(first&second)|(second&carry)|(first&carry);//if there is 2 '1's then carry is true
     }
