@@ -15,15 +15,17 @@ using namespace std;
 
 //Global Constants - Math/Physics Constants, Conversions,
 //                   2-D Array Dimensions
-const int COLS=10;
+const int COLS=12;//Two more than necessary to have border
 
 //Function Prototypes
+void initAry(char [][COLS],int);
 void fillAry(char [][COLS],int);
 void prntAry(char [][COLS],int);
 void choice(char [][COLS],int);
 void bombs(char [][COLS]);
 void cntBomb(char [][COLS],int);
 bool check(char [][COLS],int,int);
+void reveal(char [][COLS],int,int);
 void death();
 
 //Execution Begins Here
@@ -32,10 +34,11 @@ int main(int argc, char** argv) {
     srand(static_cast<unsigned int>(time(0)));
     
     //Declare Variables
-    int rows=10;
+    int rows=12;//Two more than necessary for border
     char array[rows][COLS];
     
     //Fill and Print array
+    initAry(array,rows);
     fillAry(array,rows);
     prntAry(array,rows);
     cntBomb(array,rows);
@@ -51,9 +54,16 @@ int main(int argc, char** argv) {
     //Exit stage right!
     return 0;
 }
-void fillAry(char a[][COLS],int rows){
+void initAry(char a[][COLS],int rows){
     for(int row=0;row<rows;row++){
         for(int col=0;col<COLS;col++){
+            a[row][col]='B';
+        }
+    }
+}
+void fillAry(char a[][COLS],int rows){
+    for(int row=1;row<rows-1;row++){
+        for(int col=1;col<COLS-1;col++){
             a[row][col]='X';
         }
     }
@@ -74,20 +84,19 @@ void choice(char a[][COLS],int rows){
     int chseRow;
     int chseCol;
     cin>>action>>chseRow>>chseCol;
-    chseRow-=1;
-    chseCol-=1;
     if(action=='f'){
         a[chseRow][chseCol]='F';
     }else if(action=='s'){
         live=check(a,chseRow,chseCol);
     }
+    if(live)reveal(a,chseRow,chseCol);
     if(!live)return;
     prntAry(a,rows);
 }
 void bombs(char a[][COLS]){
     for(int bombs=0;bombs<10;bombs++){
-        int bombRow=rand()%10;
-        int bombCol=rand()%10;
+        int bombRow=rand()%10+1;
+        int bombCol=rand()%10+1;
         if(a[bombRow][bombCol]=='B'){
             bombs-=1;
         }
@@ -96,8 +105,8 @@ void bombs(char a[][COLS]){
 }
 void cntBomb(char a[][COLS],int rows){
     int count=0;
-    for(int row=0;row<rows;row++){
-        for(int col=0;col<COLS;col++){
+    for(int row=1;row<rows-1;row++){
+        for(int col=1;col<COLS-1;col++){
             if(a[row][col]=='B'){
                 count++;
             }
@@ -112,25 +121,35 @@ bool check(char a[][COLS],int chceRow,int chceCol){
         return false;
     }
     if(a[chceRow-1][chceCol-1]=='B')bombCnt++;
-//    else if(a[chceRow-1][chceCol-1]=='X')check(a,chceRow-1,chceCol-1);
     if(a[chceRow-1][chceCol]=='B')bombCnt++;
-//    else if(a[chceRow-1][chceCol]=='X')check(a,chceRow-1,chceCol);
     if(a[chceRow-1][chceCol+1]=='B')bombCnt++;
-//    else if(a[chceRow-1][chceCol+1]=='X')check(a,chceRow-1,chceCol+1);
     if(a[chceRow][chceCol-1]=='B')bombCnt++;
-//    else if(a[chceRow][chceCol-1]=='X')check(a,chceRow,chceCol-1);
     if(a[chceRow][chceCol+1]=='B')bombCnt++;
-//    else if(a[chceRow][chceCol+1]=='X')check(a,chceRow,chceCol+1);
     if(a[chceRow+1][chceCol-1]=='B')bombCnt++;
-//    else if(a[chceRow+1][chceCol-1]=='X')check(a,chceRow+1,chceCol-1);
     if(a[chceRow+1][chceCol]=='B')bombCnt++;
-//    else if(a[chceRow+1][chceCol]=='X')check(a,chceRow+1,chceCol);
     if(a[chceRow+1][chceCol+1]=='B')bombCnt++;
-//    else if(a[chceRow+1][chceCol+1]=='X')check(a,chceRow+1,chceCol+1);
     a[chceRow][chceCol]=bombCnt+48;
     if(bombCnt==0)a[chceRow][chceCol]=' ';
     return true;
 }
+void reveal(char a[][COLS],int chosRow,int chosCol){
+    if(a[chosRow-1][chosCol]!='B'){
+        check(a,chosRow-1,chosCol);
+        reveal(a,chosRow-1,chosCol);
+    }
+//    if(a[chosRow+1][chosCol]!='B'){
+//        check(a,chosRow+1,chosCol);
+//        reveal(a,chosRow+1,chosCol);
+//    }
+//    if(a[chosRow][chosCol-1]!='B'){
+//        check(a,chosRow,chosCol-1);
+//        reveal(a,chosRow,chosCol-1);
+//    }
+    if(a[chosRow][chosCol+1]!='B'){
+        check(a,chosRow,chosCol+1);
+        reveal(a,chosRow,chosCol+1);
+    }
+}
 void death(){
-    cout<<"BOOOOM BITCH U DEAD!!"<<endl;
+    cout<<"dead"<<endl;
 }
