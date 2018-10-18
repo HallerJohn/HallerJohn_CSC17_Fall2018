@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
     //Set random number seed
     srand(static_cast<unsigned int>(time(0)));
     //Declare Variables
+    ofstream out;
     fstream file;
     string inpFile;
     int SIZE=50;
@@ -38,14 +39,16 @@ int main(int argc, char** argv) {
     inpFile+=".txt";
     
     //Open file
-    file.open(inpFile.c_str(), ios::out | ios::in );
+    out.open(inpFile.c_str());
+    out.close();
+    file.open(inpFile.c_str(),fstream::out);
     
     for(int i=0;i<SIZE;i++){
         file<<array[i];
     }
     file.close();
     
-    file.open(inpFile.c_str());
+    file.open(inpFile.c_str(),fstream::in);
     
     for(int i=0;i<SIZE;i++){
         file>>array2[i];
@@ -55,6 +58,7 @@ int main(int argc, char** argv) {
     for(int i=0;i<SIZE;i++){
         cout<<array2[i];
     }
+    file.close();
     //Exit stage right!
     return 0;
 }
