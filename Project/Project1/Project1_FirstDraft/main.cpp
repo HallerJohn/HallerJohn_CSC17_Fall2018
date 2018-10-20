@@ -10,6 +10,8 @@
 #include <iomanip>
 #include <cstdlib>
 #include <ctime>
+#include <cstring>
+#include <fstream>
 using namespace std;
 
 //User Libraries
@@ -20,6 +22,7 @@ using namespace std;
 const int COLS=12;//Two more than necessary to have border
 
 //Function Prototypes
+void intro(string);
 char **initAry(int);
 Bomb *filStrc(char **,int);
 void fillAry(Bomb *,char [][COLS]);
@@ -33,13 +36,45 @@ bool check(Bomb *,int,int,char [][COLS]);
 void reveal(Bomb *,int,int,char [][COLS]);
 void death();
 bool victory(Bomb *,int,int);
+void destroy(Bomb *);
 
 //Execution Begins Here
 int main(int argc, char** argv) {
     //Set random number seed
     srand(static_cast<unsigned int>(time(0)));
     
-    //Declare Variables and initialize variables
+    //File stuff
+    fstream file;//input output operator
+    file.open("intro.dat",ios::in|ios::out|ios::binary);//open file in bin mode
+                                                        //for input/output
+    
+    //Declare intro strings
+    int strngSz=30;//size for welcome strings
+    char wlcome1[strngSz]= " ";//first welcome string
+    char wlcome2[strngSz]= "Welcome to MINESWEEPER!";//second welcome string
+    char wlcome3[strngSz]= "";//third welcome string
+    
+    //Delcare enumeration for use in a stupid way for points
+    enum stupid{one,two};
+    
+    //Copy welcome string to 1
+    if(one<two){//stupid way to use enumeration
+        strcpy(wlcome1,wlcome2);//copy string 2 onto string 1
+    }
+    
+    //write contents of wlcome1 to binary file
+    file.write(wlcome1,sizeof(wlcome1));//write contents of wlcome1 to bin file
+    file.close();//close file
+    
+    //read in contents of binary file to string
+    file.open("intro.dat",ios::in|ios::out|ios::binary);//reopen file for input
+    file.read(wlcome3,sizeof(wlcome3));//read in from file
+    //Display instructions
+    intro(wlcome3);//display first line of intro
+    
+    
+    
+    //Declare Variables and initialize variables for game
     int rows=12;//Two more than necessary for border
     char playAry[rows][COLS];//Grid that player sees and uses
     char **dynAry=initAry(rows);
@@ -57,17 +92,31 @@ int main(int argc, char** argv) {
 //    cntBomb(array2D); //used for testing to verify bomb count
     
     //Choose a position and search for bombs
-    while(alive&&!win){
+    while(alive&&!win){//checks to see if player is alive and has not won yet
         
         alive=choice(array2D,playAry,rows,nFlags,bombFlg,win);//inputs user's choice and checks for bombs
     }
     
-    //Process/Map inputs to outputs
-    
-    //Output data
+    //Destroy dynamic components
+    destroy(array2D);
     
     //Exit stage right!
     return 0;
+}
+void intro(string welcome){//intro/instructions for game
+    cout<<welcome<<endl;
+    cout<<"The objective is to flag all of the tiles that "
+            <<"contain a bomb"<<endl;
+    cout<<"First you will input how many bombs you "
+            <<"want to play with [1-99]"<<endl;
+    cout<<"Next select a tile"<<endl;
+    cout<<"You do this by entering your action, 's' for select, "
+            <<"or 'f' for flag"<<endl;
+    cout<<"Follow your action with a space and then a number [1-10] "
+            <<"for what row you want to select"<<endl;
+    cout<<"Followed by another space and a number [1-10] for what "
+            <<"column you want"<<endl;
+    cout<<"An example input is [s 4 5]"<<endl<<endl<<endl<<endl;
 }
 char **initAry(int row){
     char **a=new char*[row];
@@ -155,21 +204,33 @@ bool choice(Bomb *d2,char playAry[][COLS],int rows,int nFlags,int bombFlg,
     char action;//which action the player will take [flag/selection]
     int chseRow;//chosen row
     int chseCol;//chosen col
-    cin>>action>>chseRow>>chseCol;
+    cin>>action>>chseRow>>chseCol;//input action/row/col
+    if(chseRow<1||chseRow>10){//check for valid row input
+        cout<<"Invalid row number, ending program"<<endl;
+        exit(EXIT_FAILURE);//exit if invalid
+    }
+    if(chseCol<1||chseCol>10){//check for valid col input
+        cout<<"Invalid col number, ending program"<<endl;
+        exit(EXIT_FAILURE);//exit if invald
+    }
     if(action=='f'){
         nFlags++;//increment flag counter
-        if(playAry[chseRow][chseCol]=='F'){
+        if(playAry[chseRow][chseCol]=='F'){//if flagging a flag
             playAry[chseRow][chseCol]='X';//option to unflag by flagging it again thanks mom
             nFlags--;//Decrement since flag was undone
         }
-        else if(d2->bombAry[chseRow][chseCol]=='B')bombFlg++;//increment bomb flag counter
         else playAry[chseRow][chseCol]='F';//set tile to 'F' for flag choice
+        if(d2->bombAry[chseRow][chseCol]=='B')bombFlg++;//increment bomb flag counter
     }else if(action=='s'){
         live=check(d2,chseRow,chseCol,playAry);//Select tile and send to check
+    }else{//check for invalid action input
+        cout<<"Invalid input for action, ending program"<<endl;
+        exit(EXIT_FAILURE);//exit if invalid
     }
 //    if(live)reveal(a,chseRow,chseCol);
     prntAry(playAry,rows);//print array after choice
-    win=victory(d2,nFlags,bombFlg);
+    win=victory(d2,nFlags,bombFlg);//check if player has won
+    if(win)prntAry(playAry,rows);//print array final time if they won
     return live;//return life state
 }
 void bombs(Bomb *d2){//used to generate bombs in bomb grid
@@ -264,4 +325,11 @@ bool victory(Bomb *d2,int nFlags,int bombFlg){//Used to determine if player won
         return true;
     }
     return false;
+}
+void destroy(Bomb *d2){//delete dynamic elements
+    for(int i=0;i<d2->rows;i++){
+        delete []d2->bombAry[i];
+    }
+    delete []d2->bombAry;
+    delete d2;
 }
