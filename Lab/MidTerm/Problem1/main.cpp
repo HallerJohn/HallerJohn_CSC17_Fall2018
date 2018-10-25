@@ -22,6 +22,7 @@ using namespace std;
 Account *flStruc();//fill contents of structure and return pointer to it
 float calcBal(Account *);//calculate balance
 void ptStruc(Account *);//print contents of structure
+void cleanUp(Account *);//Cleanup
 
 //Execution Begins Here
 int main(int argc, char** argv) {
@@ -36,6 +37,8 @@ int main(int argc, char** argv) {
     //Output data
     ptStruc(point);//Print data
     
+    //Delete pointer to structure
+    cleanUp(point);
     //Exit stage right!
     return 0;
 }
@@ -99,4 +102,7 @@ void ptStruc(Account *point){
     cout<<left<<setw(width)<<"Total deposited :"<<"$"<<point->totDeps<<endl;
     cout<<left<<setw(width)<<"Your current balance is :"<<"$"<<point->endBal
             <<endl;
+}
+void cleanUp(Account *point){
+    delete point;
 }
