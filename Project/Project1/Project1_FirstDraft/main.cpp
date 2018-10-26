@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     char wlcome2[strngSz]= "Welcome to MINESWEEPER!";//second welcome string
     char wlcome3[strngSz]= "";//third welcome string
     
-    //Delcare enumeration for use in a stupid way for points
+    //Declare enumeration for use in a stupid way for points
     enum stupid{one,two};
     
     //Copy welcome string to 1
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
     int bombFlg=0;//counter for number of flags on bombs
     bool win=false;
     
-    //Fill and Print array
+    //Fill Arrays and print playAry
     initAry(rows);//initialize array to 'b' for border
     fillAry(array2D,playAry);//fill in usable part of array with 'X'
     prntAry(playAry,rows);//Print the array
