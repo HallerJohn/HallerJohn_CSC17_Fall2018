@@ -5,10 +5,12 @@
  */
 
 #include "Invntry.h"
-
+#include <iostream>
+using namespace std;
 
 
 Invntry::Invntry(){
+    cout<<"HI"<<endl;
     itemNum=0;
     quanty=0;
     cost=0;
