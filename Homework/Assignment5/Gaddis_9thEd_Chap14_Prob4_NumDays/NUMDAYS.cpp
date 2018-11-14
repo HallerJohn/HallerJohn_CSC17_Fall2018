@@ -13,7 +13,7 @@ void NumDays::print(){
     cout<<"Hours worked :"<<hours<<endl;
     cout<<"Days  worked :"<<days<<endl;
 }
-NumDays NumDays::operator +(const NumDays& right){
+NumDays NumDays::operator +(const NumDays &right){
     NumDays temp;
     temp.hours=hours+right.hours;
     return temp;
