@@ -23,6 +23,10 @@ public:
         setHour(hour);
         setDays();
     }
+    NumDays (){
+        hours=0;
+        days=0;
+    }
     NumDays operator+(const NumDays&);
     void setHour(int hour){
         hours=hour;

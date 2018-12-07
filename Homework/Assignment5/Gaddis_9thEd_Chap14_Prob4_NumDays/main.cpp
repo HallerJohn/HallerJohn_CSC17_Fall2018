@@ -34,14 +34,14 @@ int main(int argc, char** argv) {
     cin>>hours;
     
     //create object for class
-//    NumDays object2(hours);
+    NumDays object2(hours);
     
     //Output data
     object1.print();
-//    object2.print();
+    object2.print();
     
     //Add the two objects
-//    cout<<object1+object2;
+    cout<<object1+object2;
     //Exit stage right!
     return 0;
 }
