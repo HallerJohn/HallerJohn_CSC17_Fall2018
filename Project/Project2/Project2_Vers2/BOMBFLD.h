@@ -12,34 +12,18 @@
 #include "PLAYFLD.h"
 
 class Bomb : public Player{
-    friend class Player;
 private:
     int nBombs;
-    char **bField;
 public:
-    Bomb (int bombs):Player(nRows,nCols){
+    Bomb (int nRows,int nCols,int bombs):Player(nRows,nCols){
         this->rows=nRows;
         this->cols=nCols;
         nBombs=bombs;
-        makeBF();
+        makeF();
+        filFld();
         setBomb();
     };
-    void makeBF();//allocates bField
-    int getRows()const{
-        return this->rows;
-    }
-    int getCols()const{
-        return this->cols;
-    }
-    char getBomb(int i,int j)const{
-    if(i<0)return ' ';
-    if(j<0)return ' ';
-    if(i>this->rows-1)return ' ';
-    if(j>this->cols-1)return ' ';
-    return bField[i][j];
-    }
-    void print();
-    void filBomb();//Fills bomb field with 'X'
+    char getBomb(int,int)const;
     void setBomb();//Fills in bombs
     ~Bomb();
 };

@@ -55,3 +55,9 @@ void Player::prtFld(){
     }
     std::cout<<std::endl;
 }
+Player::~Player(){
+    for(int i=0; i<rows;i++){
+        delete field[i];
+    }
+    delete field;
+}
