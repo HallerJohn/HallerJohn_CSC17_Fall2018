@@ -32,7 +32,7 @@ public:
     void makeF();//Allocates pField
     void filFld();//Fills player array with 'X'
     void prtFld();
-    ~Player();
+    virtual ~Player();
 };
 
 #endif /* PLAYFLD_H */

@@ -25,7 +25,7 @@ public:
     };
     char getBomb(int,int)const;
     void setBomb();//Fills in bombs
-    ~Bomb();
+    virtual ~Bomb();
 };
 
 #endif /* BOMBFLD_H */

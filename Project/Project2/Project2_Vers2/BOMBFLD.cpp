@@ -15,7 +15,7 @@ Bomb::~Bomb(){
     for (int i = 0 ; i < this->rows ; i++){
         delete this->field[i];
     }
-    delete []this->field;
+    delete this->field;
 }
 
 void Bomb::setBomb(){

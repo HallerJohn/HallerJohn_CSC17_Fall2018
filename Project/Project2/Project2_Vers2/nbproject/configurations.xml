@@ -5,6 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>BOMBFLD.h</itemPath>
+      <itemPath>FILEOUT.h</itemPath>
+      <itemPath>FILETMP.h</itemPath>
+      <itemPath>FOUTTMP.h</itemPath>
       <itemPath>PLAYFLD.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -15,6 +18,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>BOMBFLD.cpp</itemPath>
+      <itemPath>FILEOUT.cpp</itemPath>
       <itemPath>PLAYFLD.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
@@ -43,6 +47,14 @@
       <item path="BOMBFLD.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BOMBFLD.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FILEOUT.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="FILEOUT.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FILETMP.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FOUTTMP.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="PLAYFLD.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -74,6 +86,14 @@
       <item path="BOMBFLD.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BOMBFLD.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FILEOUT.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="FILEOUT.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FILETMP.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FOUTTMP.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="PLAYFLD.cpp" ex="false" tool="1" flavor2="0">
       </item>

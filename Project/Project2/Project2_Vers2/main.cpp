@@ -8,11 +8,15 @@
 //System Libraries
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
 using namespace std;
 
 //User Libraries
 #include "BOMBFLD.h"
 #include "PLAYFLD.h"
+#include "FILEOUT.h"
+#include "FILETMP.h"
+#include "FOUTTMP.h"
 
 //Global Constants - Math/Physics Constants, Conversions,
 //                   2-D Array Dimensions
@@ -24,8 +28,8 @@ void intro();
 //The choice function inputs the players command and which tile it applies to
 void choice(char &,int &,int &);
 //The check function detects if the tile selected is a bomb or not, then drives
-//the program further depending on the result
-void check(Player *,Bomb *,int,int);
+//the program further depending on the result and also returns life status as bool
+bool check(Player *,Bomb *,int,int);
 //The fndBomb function checks the surrounding 8 tiles for bombs and sets the
 //tile to be the number of bombs found. If it finds no bombs it will drive
 //the program further
@@ -42,6 +46,10 @@ void death(Player *);
 //matches with a bomb or not. Once all of the bombs have been flagged the user
 //will win
 void flag(Player *,Bomb *,int,int,int &,int &);
+void setFile(FileOut *,int,int,char);
+void write(FileOut *);
+void writeGme(FileOut *,char);
+void cleanup(Player *,Bomb *, FileOut *);
 
 //Execution Begins Here
 int main(int argc, char** argv) {
@@ -58,86 +66,100 @@ int main(int argc, char** argv) {
     int chosenC;
     //The action the player is going to take
     char command;
-    //The count of flags successfully placed on bombs
-    int flagCnt=0;
-    //The number of flags placed
-    int nFlags=0;
+    bool alive=true;
+    int games=0;
     
     //Intro
     intro();
-    
-    //Input size of grid and number of bombs
-    cout<<"We will now construct your minefield."<<endl;
-    cout<<"How many rows would you like in your field?"<<endl;
-    cin>>nRows;
-    cout<<"How many columns would you like in your field?"<<endl;
-    cin>>nCols;
-    cout<<"How many bombs would you like to play with?"<<endl;
-    cin>>bombs;
-    
-    //Create pointer to Bomb and Player field
-    
-    //Pointer for the player grid, this will be the field that the player sees,
-    //and interacts with.
-    Player *pPoint=new Player(nRows,nCols);
-    //Pointer for the bomb grid, this will not be visible to the player, and 
-    //they will not be able to interact with it.
-    Bomb *bPoint=new Bomb(nRows,nCols,bombs);
-    
-    //Print bomb field for testing
-//    bPoint->prtFld();
-    
-    //Print player field
-    pPoint->prtFld();
-    
-    
-    //Loop to play game
-    //This do-while is to loop the process of taking turns until the game is over
+    char replay;
     do{
-        //input players decision
-        //this do-while is used to loop the input process until appropriate
-        //values have been inputted(input validation)
-        do{
-            //Run the choice function to input their turn
-            choice(command,chosenR,chosenC);
-            //If the user inputs values outside of their specified range
-            //The program will prompt them to try again
-            if(chosenR>nRows-1||chosenC>nCols-1){
-                cout<<"Invalid Input, Try again"<<endl;
-            }
-        //End of loop for input validation
-        }while(chosenR>nRows-1&&chosenC>nCols-1);
-
-        //If player selects a tile
-        //This is used to drive the program if the player wants to select a tile
-        if(command=='s'){
-            //Check to see if the tile is a bomb and drive program depending on result
-            check(pPoint,bPoint,chosenR,chosenC);
-            //Print the field so user can see result of their action
-            pPoint->prtFld();
-        //If the player chooses to flag a tile
-        }else if(command=='f'){
-            //Runs the flag function to flag the chosen tile, as well as increment
-            //flagCnt if necessary
-            flag(pPoint,bPoint,chosenR,chosenC,flagCnt,nFlags);
-        }
         
-    //End of loop for the game, when this ends the player has won.
-    //The condition is set this way so that the player needs to have flagged the
-    //exact amount of bombs, that way they cannot flag every single tile and then win.
-//    }while(flagCnt<bombs&&nFlags!=bombs);
-    }while(1<0);
-    
-    //If you made it here you have won
-    cout<<"Congratulations you have won JOHNSWEEPER!"<<endl;
-    
-    //Cleanup time
-    
-    //Delete pointer to Bomb
-    //delete [] bPoint;
-    //Delete pointer to player array
-    //delete [] pPoint;
-    
+        //The count of flags successfully placed on bombs
+        int flagCnt=0;
+        //The number of flags placed
+        int nFlags=0;
+        //Input size of grid and number of bombs
+        cout<<"We will now construct your minefield."<<endl;
+        cout<<"How many rows would you like in your field?"<<endl;
+        cin>>nRows;
+        cout<<"How many columns would you like in your field?"<<endl;
+        cin>>nCols;
+        cout<<"How many bombs would you like to play with?"<<endl;
+        cin>>bombs;
+
+        games++;
+        //Create pointer to Bomb and Player field
+
+        //Pointer for the player grid, this will be the field that the player sees,
+        //and interacts with.
+        Player *pPoint=new Player(nRows,nCols);
+        //Pointer for the bomb grid, this will not be visible to the player, and 
+        //they will not be able to interact with it.
+        Bomb *bPoint=new Bomb(nRows,nCols,bombs);
+
+        //Create pointer for FileOut class
+        FileOut *fPoint=new FileOut(games);
+
+        //Print bomb field for testing
+    //    bPoint->prtFld();
+
+        //Print player field
+        pPoint->prtFld();
+        fPoint->setGame(games);
+        replay='n';
+        //Loop to play game
+        //This do-while is to loop the process of taking turns until the game is over
+        do{
+            //input players decision
+            //this do-while is used to loop the input process until appropriate
+            //values have been inputted(input validation)
+            do{
+                //Run the choice function to input their turn
+                choice(command,chosenR,chosenC);
+                //If the user inputs values outside of their specified range
+                //The program will prompt them to try again
+                if(chosenR>nRows-1||chosenC>nCols-1){
+                    cout<<"Invalid Input, Try again"<<endl;
+                }
+            //End of loop for input validation
+            }while(chosenR>nRows-1&&chosenC>nCols-1);
+            fPoint->incTurn();
+            setFile(fPoint,chosenR,chosenC,command);
+            write(fPoint);
+
+            //If player selects a tile
+            //This is used to drive the program if the player wants to select a tile
+            if(command=='s'){
+                //Check to see if the tile is a bomb and drive program depending on result
+                alive=check(pPoint,bPoint,chosenR,chosenC);
+                //Print the field so user can see result of their action
+                if(alive)pPoint->prtFld();
+            //If the player chooses to flag a tile
+            }else if(command=='f'){
+                //Runs the flag function to flag the chosen tile, as well as increment
+                //flagCnt if necessary
+                flag(pPoint,bPoint,chosenR,chosenC,flagCnt,nFlags);
+            }
+
+        //End of loop for the game, when this ends the player has won.
+        //The condition is set this way so that the player needs to have flagged the
+        //exact amount of bombs, that way they cannot flag every single tile and then win.
+            if(!alive)break;
+        }while(flagCnt!=bombs || nFlags!=bombs);
+
+        if(alive){
+            cout<<"Congratulations you have won JOHNSWEEPER!"<<endl;
+            writeGme(fPoint,'V');
+        }else writeGme(fPoint,'L');
+
+        //Cleanup time
+
+        //Delete pointers to objects
+        cleanup(pPoint,bPoint,fPoint);
+        
+        cout<<"Would you like to play again? [y,n]"<<endl;
+        cin>>replay;
+    }while(replay=='y');
     //Exit stage right!
     return 0;
 }
@@ -156,22 +178,24 @@ void choice(char &command,int &chosenR,int &chosenC){
 
 //The check function takes the pointer to Player class, pointer to Bomb class,
 //  the chosen row, and the chosen column
-//It returns nothing
+//It returns a boolean
 //This function determines if the chosen tile is a bomb or not, and then further
 //  drives the program depending on the result
 
-void check(Player *pPoint,Bomb *bPoint,int chosenR,int chosenC){
+bool check(Player *pPoint,Bomb *bPoint,int chosenR,int chosenC){
     //Checks to see if the chosen tile is bomb
     if(bPoint->getBomb(chosenR,chosenC)=='B'){
         //If it is it sets the tile to = 'B'
         pPoint->setFld(chosenR,chosenC,'B');
-        //Calls death function to output result and end program
+        //Calls death function to output result and return false for alive
         death(pPoint);
+        return false;
     }
     //If the chosen tile is not a bomb 
     else if(bPoint->getBomb(chosenR,chosenC)=='X'){
         //It will then check the surrounding 8 tiles for bombs
         fndBomb(pPoint,bPoint,chosenR,chosenC);
+        return true;
     }
 }
 
@@ -238,8 +262,6 @@ void death(Player *pPoint){
     pPoint->prtFld();
     //Death message, I know its beautiful
     cout<<"You hit a bomb and died, rip."<<endl;
-    //Exit program
-    exit(EXIT_FAILURE);
 }
 //The flag function takes the pointer to the Player class, the pointer to the Bomb class,
 //  the chosen row, the chosen col, the flagCnt by reference, as well as nFlags by reference
@@ -286,4 +308,38 @@ void intro(){
     cout<<"Followed by another space and a number for what "
             <<"column you want"<<endl;
     cout<<"An example input is [s 4 5]"<<endl<<endl;
+}
+
+void setFile(FileOut *fPoint,int row,int col,char action){
+    fPoint->setRow(row+1);
+    fPoint->setCol(col+1);
+    fPoint->setAct(action);
+}
+
+void write(FileOut *fPoint){
+    fileOut("   ");
+    fileOut(fPoint->getGame());
+    fileOut("        ");
+    fileOut(fPoint->getTurn());
+    fileOut("          ");
+    fileOut(fPoint->getAct());
+    fileOut("         ");
+    fileOut(fPoint->getRow());
+    fileOut(" , ");
+    fileOut(fPoint->getCol());
+    fileOut("\r\n");
+}
+
+void writeGme(FileOut *fPoint,char result){
+    fleOutG("   ");
+    fleOutG(fPoint->getGame());
+    fleOutG("             ");
+    fleOutG(result);
+    fleOutG("\r\n");
+}
+
+void cleanup(Player *pPoint,Bomb *bPoint, FileOut *fPoint){
+    delete pPoint;
+//    delete bPoint;
+    delete fPoint;
 }

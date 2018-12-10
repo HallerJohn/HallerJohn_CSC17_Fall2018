@@ -1,0 +1,18 @@
+build/Debug/Cygwin-Windows/main.o: main.cpp BOMBFLD.h PLAYFLD.h FIELD.h \
+ FILEOUT.h FILETMP.h FOUTTMP.h IEXIST.h AGGREGATE.h
+
+BOMBFLD.h:
+
+PLAYFLD.h:
+
+FIELD.h:
+
+FILEOUT.h:
+
+FILETMP.h:
+
+FOUTTMP.h:
+
+IEXIST.h:
+
+AGGREGATE.h:

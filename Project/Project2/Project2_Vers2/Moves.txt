@@ -1,0 +1,7 @@
+In this file you will find all of the moves you made in your games
+
+Game     Turn        Move        Tile
+
+   1        1          f         2 , 2
+   1        2          s         2 , 2
+   1        3          f         6 , 7

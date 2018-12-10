@@ -1,0 +1,4 @@
+In this file you will find the results of all games played in a single program run.
+
+Game #        Result
+   1             L
